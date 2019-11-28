@@ -1,2 +1,82 @@
 請運用DHT22+LCD或四數位七段顯示器(兩者選一)，設計程式，讓溫度(攝氏)及相對溼度資料在顯示器上呈現。
 完成期限：108年10月30日
+                                      LCD+DHT22
+#include "DHT.h"        // 匯入DHT函式庫
+#define DHTPIN 2        // 定義DHT函式庫中，所使用的訊號來源
+#define DHTTYPE DHT22   // 定義DHT函式庫中，所使用的感測器
+DHT dht(DHTPIN, DHTTYPE);
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE); 
+
+void setup() {
+ lcd.begin(16, 2);     //初始化 LCD，代表我們使用的LCD一行有16個字元，共2行。
+ lcd.backlight();      //開啟背光
+
+ dht.begin();
+
+}
+
+void loop() { 
+
+  delay(200); 
+  float dhtT = dht.readTemperature();    //設定浮點變數dhtT，讀取溫度
+  float dhtH = dht.readHumidity();       //設定浮點變數dhtH，讀取濕度
+
+  lcd.setCursor(0, 0);   // 設定游標位置在第一行第一個字
+  lcd.print("Temperature:"); //LCD顯示" "內的文字
+  lcd.setCursor(12,0 );        // 設定游標位置在第二行第一個字
+  lcd.print(dhtT);               //LCD顯示x的內容
+
+  lcd.setCursor(0,1);   // 設定游標位置在第一行第一個字
+  lcd.print("Humidity:"); //LCD顯示" "內的文字
+  lcd.setCursor(9,1);        // 設定游標位置在第二行第一個字
+  lcd.print(dhtH);               //LCD顯示x的內容"); //LCD顯示" "內的文字
+  }
+  
+  
+                                         DHT+四位數七段顯示器 
+#include "SevenSegmentTM1637.h"
+#include "SevenSegmentExtended.h"
+
+/*初始化全局TM1637顯示對象
+*構造函數有兩個參數，時鐘引腳號和數字輸出引腳號：
+* SevenSegmentTM1637（字節pinCLK，字節pinDIO）;
+*/
+const byte PIN_CLK = 4;  // 定義CLK引腳（任何數字引腳）
+const byte PIN_DIO = 5;  //定義DIO引腳（任何數字引腳）
+SevenSegmentTM1637    display(PIN_CLK, PIN_DIO);
+
+#include "DHT.h"        // 匯入DHT函式庫
+#define DHTPIN 2        // 定義DHT函式庫中，所使用的訊號來源
+#define DHTTYPE DHT22   // 定義DHT函式庫中，所使用的感測器
+DHT dht(DHTPIN, DHTTYPE);
+
+// run setup code
+void setup() {
+  Serial.begin(9600);        //在9600波特率下初始化串行連接
+  display.begin();            //初始化顯示
+  display.setBacklight(100);  //將亮度設置為100％
+
+  dht.begin();
+}
+
+// run loop (forever)
+void loop() {
+  int dhtT = dht.readTemperature();    //設定浮點變數dhtT，讀取溫度
+  int dhtH = dht.readHumidity();       //設定浮點變數dhtH，讀取濕度
+  display.print("H");
+  delay(1000); 
+  display.clear();
+  display.print(dhtH);                //在顯示器上顯示LOOP
+  delay(1000);                          //等待1000毫秒
+  display.clear();
+
+  display.print("T");
+  delay(1000); 
+  display.clear();
+  display.print(dhtT);                //在顯示器上顯示LOOP
+  delay(1000);                          //等待1000毫秒
+  display.clear();
+  
+  }
