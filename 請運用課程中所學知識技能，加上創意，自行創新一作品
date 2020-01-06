@@ -1,2 +1,109 @@
-請運用課程中所學知識技能，加一點創意變化，可新增元件或電器，創作自己的作品。須完成程式碼，並可正常運作。完成實作作品請自行拍照存檔。
-完成期限：108年12月31日
+紅外線鋼琴
+
+#include <IRremote.h>//匯入函式庫
+IRrecv irrecv(3);//設腳位為6
+decode_results results;//接收到的紅外線訊號值
+
+void setup()
+{
+  Serial.begin(9600);
+  irrecv.enableIRIn();//啟用紅外線
+  Serial.println("Enabled IRin");
+  pinMode(13,OUTPUT);
+  pinMode(12,OUTPUT);
+  pinMode(11,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(8,OUTPUT);
+  pinMode(7,OUTPUT);
+  pinMode(6,OUTPUT);
+  pinMode(2,OUTPUT);
+}
+
+void loop() 
+{
+  if (irrecv.decode(&results)) 
+  {//如果接收到紅外線
+    Serial.println(results.value);//印出接收的值
+    if(results.value==16738455)
+    {
+      tone(2,523);
+      digitalWrite(13,HIGH);
+      delay(500);//等500秒
+      digitalWrite(13,LOW);
+      noTone(2);
+    }
+    else if(results.value==16724175)
+    {
+      tone(2,587);
+      digitalWrite(12,HIGH);
+      delay(500);//等500秒
+      digitalWrite(12,LOW);
+      noTone(2);
+    }
+    else if(results.value==16718055)
+    {
+      tone(2,659);
+      digitalWrite(11,HIGH);
+      delay(500);//等500秒
+      digitalWrite(11,LOW);
+      noTone(2);
+    }
+    else if(results.value==16743045)
+    {
+      tone(2,698);
+      digitalWrite(10,HIGH);
+      delay(500);//等500秒
+      digitalWrite(10,LOW);
+      noTone(2);
+    }
+    else if(results.value==16716015)
+    {
+      tone(2,784);
+      digitalWrite(9,HIGH);
+      delay(500);//等500秒
+      digitalWrite(9,LOW);
+      noTone(2);
+    }
+    else if(results.value==16726215)
+    {
+      tone(2,880);
+      digitalWrite(8,HIGH);
+      delay(500);//等500秒
+      digitalWrite(8,LOW);
+      noTone(2);
+    }
+    else if(results.value==16734885)
+    {
+      tone(2,988);
+      digitalWrite(7,HIGH);
+      delay(500);//等500秒
+      digitalWrite(7,LOW);
+      noTone(2);
+    }
+    else if(results.value==16728765)
+    {
+      tone(2,1046);
+      digitalWrite(6,HIGH);
+      delay(500);//等500秒
+      digitalWrite(6,LOW);
+      noTone(2);
+    }
+    
+    else
+    {
+      noTone(2);
+      digitalWrite(13,LOW);
+      digitalWrite(12,LOW);
+      digitalWrite(11,LOW);
+      digitalWrite(10,LOW);
+      digitalWrite(9,LOW);
+      digitalWrite(8,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(6,LOW);
+    }
+
+   irrecv.resume(); //讓接收器再接收
+  }
+  delay(100);//等100秒
+}
