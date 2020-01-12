@@ -1,7 +1,8 @@
+                                                  針對特定範圍給予一定的訊息
 #include <SPI.h>
 #include <SD.h>
 #include "DHT.h"        // 匯入DHT函式庫
-#define DHTPIN 3        // 定義DHT函式庫中，所使用的訊號來源
+#define DHTPIN 2        // 定義DHT函式庫中，所使用的訊號來源
 #define DHTTYPE DHT22   // 定義DHT函式庫中，所使用的感測器
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -34,57 +35,29 @@ void loop() {
   if (myF) {
     Serial.print("Writing to clock.txt...");
     myF.print(dhtT);
-    myF.print(",");
-    myF.println("clock");
+     if(dhtT>=30){
+      myF.print(dhtT);
+      myF.print(",");
+      myF.println("hot");
+  }
+ else if(dhtT<=24){
+      myF.print(dhtT);
+      myF.print(",");
+      myF.println("cool");
+  }
+  else{
+      myF.print(dhtT);
+      myF.print(",");
+      myF.println("good");
+  }
+    
     i++;
-    delay(10000);
+    delay(1000);
     // close the file:
     myF.flush();
     Serial.println("done.");
   } else {
     // if the file didn't open, print an error:
     Serial.println("error opening clock.txt");
-  }
-}
-void loop() {
-
-  
-  printTime();
-  
-  delay(5000);                        // 每次測量間隔
-
-  //每次讀取溫度或濕度大約會花 250 milliseconds
-  float dhtT = dht.readTemperature();    //設定浮點變數dhtT，讀取溫度
-  float dhtH = dht.readHumidity();       //設定浮點變數dhtH，讀取濕度
-
-  Serial.print("Temperature: ");        //序列埠監控視窗印出文字
-  Serial.print(dhtT);                   //序列埠監控視窗印出dhtT數值
-  Serial.print(" *C ");
-  Serial.print("Humidity: ");
-  Serial.print(dhtH);                 //序列埠監控視窗印出dhtH數值
-  Serial.println(" % ");
-  
-  if (!SD.begin(4)) {
-
-    while (1);
-  }
-  
-
-  // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
-  myF = SD.open("clock.txt", FILE_WRITE);
-
-  // if the file opened okay, write to it:
-  if (myF) {
-
-    myF.print(dhtT);
-    myF.print(",");
-    myF.println("clock");
-    i++;
-    // close the file:
-    myF.flush();
-   
-  } else {
-    // if the file didn't open, print an error:
   }
 }
